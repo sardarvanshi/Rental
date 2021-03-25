@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "157519371211",
+    "project_id": "rental-4303e",
+    "storage_bucket": "rental-4303e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:157519371211:android:2538920642ae040965f44e",
+        "android_client_info": {
+          "package_name": "com.hpud.rantal"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "157519371211-dlbjdn61g798rk00hvmid4154c882t7b.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.hpud.rantal",
+            "certificate_hash": "d2d78f3d69edcac6b46e58bbcbfebc036b9e697a"
+          }
+        },
+        {
+          "client_id": "157519371211-dgl2cpr55879pivhqgsfdnqfklqrh17n.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDmEdjsyv2chEp5kqVoq1dr-vcSNLNzQAk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "157519371211-dgl2cpr55879pivhqgsfdnqfklqrh17n.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
