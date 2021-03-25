@@ -6,7 +6,7 @@ workflows:
         name: iOS App
         environment:
             vars:
-                XCODE_WORKSPACE: "HPUD"
+                XCODE_WORKSPACE: "Runner"
                 XCODE_SCHEME: "Rental"
             xcode: latest
             cocoapods: default
