@@ -46,6 +46,7 @@ dependencies:
   # connection status
 
   # for ui
+  flutter_native_splash: ^1.1.5+1
   solid_bottom_sheet: ^0.1.9
   cached_network_image: ^2.5.1
   carousel_pro: ^1.0.0

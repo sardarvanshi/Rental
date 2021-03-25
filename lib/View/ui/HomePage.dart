@@ -75,7 +75,7 @@ class MyHomePageState extends State<MyHomePage> {
     return  SafeArea(
       child: BackdropScaffold(
         frontLayerBorderRadius: BorderRadius.only(topLeft: Radius.circular(15),topRight: Radius.circular(15),),
-        resizeToAvoidBottomInset: true,
+        resizeToAvoidBottomInset: false,
         backLayerBackgroundColor: AppbarIconColor,
 
         headerHeight: 300.0,
@@ -187,8 +187,8 @@ class MyHomePageState extends State<MyHomePage> {
         bottomSheet: SolidBottomSheet(
           controller: _controller,
           draggableBody: true,
-          minHeight: MediaQuery.of(context).size.height - 50,
-          body: searchPage(),
+          maxHeight: MediaQuery.of(context).size.height - 119,
+          body: SingleChildScrollView(child: searchPage()),
         ),
       ),
     );

@@ -16,11 +16,27 @@ class _searchPageState extends State<searchPage> {
         color: colorlist[2],
         borderRadius: BorderRadius.only(topRight: Radius.circular(25.0),topLeft: Radius.circular(25.0)),
       ),
-      child: Center(
-        child: Text(
-          "Hello! I'm a bottom sheet :D",
-          style: Theme.of(context).textTheme.headline1,
-        ),
+      child: Column(
+        children: [
+          Container(
+            child: Center(
+              child: Icon(Icons.linear_scale_rounded,color:colorlist[0],size: 50,)
+            ),
+          ),
+          Container(
+            child: ListView(
+              shrinkWrap: true,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextFormField(
+                    autovalidateMode: AutovalidateMode.always,
+                  )
+                )
+              ],
+            ),
+          )
+        ],
       ),
     );
   }
