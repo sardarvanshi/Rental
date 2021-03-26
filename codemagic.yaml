@@ -6,7 +6,7 @@ workflows:
         name: iOS App
         environment:
             vars:
-                XCODE_WORKSPACE: "Rental"
+                XCODE_WORKSPACE: "Rental.xcworkspace"
                 XCODE_SCHEME: "Rental"
             xcode: latest
             cocoapods: default
