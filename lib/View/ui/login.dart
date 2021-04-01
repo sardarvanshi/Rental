@@ -5,13 +5,11 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:rantal/View/ui/HomePage.dart';
 
 class LoginPageWidget extends StatefulWidget {
-
   @override
   LoginPageWidgetState createState() => LoginPageWidgetState();
 }
 
 class LoginPageWidgetState extends State<LoginPageWidget> {
-
   GoogleSignIn _googleSignIn = GoogleSignIn();
   FirebaseAuth _auth;
 
@@ -62,15 +60,16 @@ class LoginPageWidgetState extends State<LoginPageWidget> {
                             Icon(Icons.account_circle, color: Colors.white),
                             SizedBox(width: 10),
                             Text(
-                                isUserSignedIn ? 'You\'re logged in with Google' : 'Login with Google',
+                                isUserSignedIn
+                                    ? Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => MyHomePage(),
+                                        ))
+                                    : 'Login with Google',
                                 style: TextStyle(color: Colors.white))
                           ],
-                        )
-                    )
-                )
-            )
-        )
-    );
+                        ))))));
   }
 
   Future<User> _handleSignIn() async {
@@ -83,10 +82,10 @@ class LoginPageWidgetState extends State<LoginPageWidget> {
 
     if (isUserSignedIn) {
       user = _auth.currentUser;
-    }
-    else {
+    } else {
       final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
-      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
 
       final AuthCredential credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
@@ -106,11 +105,11 @@ class LoginPageWidgetState extends State<LoginPageWidget> {
   void onGoogleSignIn(BuildContext context) async {
     User user = await _handleSignIn();
     var userSignedIn = await Navigator.push(
-      context,
-      MaterialPageRoute(
+        context,
+        MaterialPageRoute(
           builder: (context) => MyHomePage(),
-            //  WelcomeUserWidget(user, _googleSignIn)),
-    ));
+          //  WelcomeUserWidget(user, _googleSignIn)),
+        ));
 
     setState(() {
       isUserSignedIn = userSignedIn == null ? true : false;
@@ -119,7 +118,6 @@ class LoginPageWidgetState extends State<LoginPageWidget> {
 }
 
 class WelcomeUserWidget extends StatelessWidget {
-
   GoogleSignIn _googleSignIn;
   User _user;
 
@@ -145,18 +143,15 @@ class WelcomeUserWidget extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     ClipOval(
-                        child: Image.network(
-                            _user.photoURL,
-                            width: 100,
-                            height: 100,
-                            fit: BoxFit.cover
-                        )
-                    ),
+                        child: Image.network(_user.photoURL,
+                            width: 100, height: 100, fit: BoxFit.cover)),
                     Text(_user.uid.toString()),
                     SizedBox(height: 20),
                     Text('Welcome,', textAlign: TextAlign.center),
-                    Text(_user.displayName, textAlign: TextAlign.center,
-                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25)),
+                    Text(_user.displayName,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 25)),
                     SizedBox(height: 20),
                     FlatButton(
                         shape: RoundedRectangleBorder(
@@ -175,15 +170,11 @@ class WelcomeUserWidget extends StatelessWidget {
                               children: <Widget>[
                                 Icon(Icons.exit_to_app, color: Colors.white),
                                 SizedBox(width: 10),
-                                Text('Log out of Google', style: TextStyle(color: Colors.white))
+                                Text('Log out of Google',
+                                    style: TextStyle(color: Colors.white))
                               ],
-                            )
-                        )
-                    )
+                            )))
                   ],
-                )
-            )
-        )
-    );
+                ))));
   }
 }

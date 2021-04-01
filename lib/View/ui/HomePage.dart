@@ -12,6 +12,7 @@ import 'package:rantal/View/util/utisUi.dart';
 import '../ui/Favorites.dart';
 import '../ui/user.dart';
 import 'Search.dart';
+import 'mapview.dart';
 
 
 class MyHomePage extends StatefulWidget {
@@ -125,6 +126,20 @@ class MyHomePageState extends State<MyHomePage> {
                   ),
                   ),*/
             ],
+          ),
+        ),
+        backLayer: Center(
+          child: Padding(
+            padding: EdgeInsets.all(20),
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+               primary: colorlist[2],
+              ),
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(builder: (context)=> MymapPage()));
+              },
+              child: Text("Map"),
+            ),
           ),
         ),
         frontLayer:
