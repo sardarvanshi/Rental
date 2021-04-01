@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import 'package:rantal/model/userinfo_model.dart';
 import '../util/utisUi.dart';
 
 class MyDetail extends StatefulWidget {
@@ -72,6 +74,7 @@ class _MyDetailState extends State<MyDetail> {
     firebaseFirestore.collection("user").doc("0001uid").update({
       "favorites": FieldValue.arrayUnion([widget.result.id]),
     });
+    //user.fetchUserdata();
     print(widget.result['rate']);
   }
 
@@ -94,6 +97,7 @@ class _MyDetailState extends State<MyDetail> {
 
   @override
   Widget build(BuildContext context) {
+    final user = Provider.of<userinfo>(context);
     return SafeArea(
       child: Scaffold(
           body: Container(
@@ -238,6 +242,7 @@ class _MyDetailState extends State<MyDetail> {
                                 // fav? favcon = Icon(Icons.favorite,color: colorlist[1],):favcon = Icon(Icons.favorite_border,color:Colors.white);
                                 fav ? fav = false : fav = true;
                               });
+                              user.fetchUserdata();
                             },
                           )
                         : IconButton(
@@ -249,6 +254,7 @@ class _MyDetailState extends State<MyDetail> {
                                 //  fav? favcon = Icon(Icons.favorite,color: colorlist[1],):favcon = Icon(Icons.favorite_border,color:Colors.white);
                                 fav ? fav = false : fav = true;
                               });
+                              user.fetchUserdata();
                             },
                           ),
                   ),

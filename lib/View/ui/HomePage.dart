@@ -66,7 +66,7 @@ class MyHomePageState extends State<MyHomePage> {
   int _selectedTab = 0;
   final _pageOptions = [
     Home(),
-    PostProperties(),
+    Userinfo(),
     FavoritesPage(),
 
   ];

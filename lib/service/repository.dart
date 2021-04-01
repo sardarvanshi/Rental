@@ -6,5 +6,5 @@ class Repository {
 
   dataprovider DataProvider = dataprovider();
 
-  userinfo fetchdata1() => DataProvider.fetchUserdata();
+  userinfo fetchdata1() => null;
 }
