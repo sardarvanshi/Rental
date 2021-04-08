@@ -13,31 +13,38 @@ class MymapPage extends StatefulWidget {
 }
 
 class _MymapPageState extends State<MymapPage> {
+
+
   var adress;
   var country;
   var postal;
 
+
   GoogleMapController googleMapController;
-  Map<MarkerId, Marker> marker = <MarkerId, Marker>{};
+  Map<MarkerId,Marker> marker = <MarkerId,Marker>{};
   Position position;
 
-  void getMarker(double lat, double long) {
+  void getMarker(double lat,double long){
     MarkerId markerId = MarkerId((lat.toString() + long.toString()));
 
     Marker markers = Marker(
         markerId: markerId,
-        position: LatLng(lat, long),
+        position: LatLng(lat,long),
         icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueCyan),
-        infoWindow: InfoWindow(snippet: "Address"));
+        infoWindow: InfoWindow(snippet: "Address")
+    );
     setState(() {
-      marker[markerId] = markers;
+      marker[markerId]= markers;
     });
+
   }
 
-  void getcurrentLocation() async {
+  void getcurrentLocation() async{
+
     Position currentposition = await Geolocator().getCurrentPosition();
     setState(() {
-      position = currentposition;
+
+      position=currentposition;
     });
   }
 
@@ -47,6 +54,7 @@ class _MymapPageState extends State<MymapPage> {
     super.initState();
     getcurrentLocation();
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -60,56 +68,56 @@ class _MymapPageState extends State<MymapPage> {
             SizedBox(
               height: 400,
               child: GoogleMap(
-                onTap: (tapped) async {
-                  final coordinates =
-                      geoco.Coordinates(tapped.latitude, tapped.longitude);
-                  var address = await geoco.Geocoder.local
-                      .findAddressesFromCoordinates(coordinates);
+                onTap: (tapped) async{
+                  final coordinates = geoco.Coordinates(tapped.latitude,tapped.longitude);
+                  print(coordinates.toString());
+                  var address = await geoco.Geocoder.local.findAddressesFromCoordinates(coordinates);
                   var firstadress = address.first;
+                  print(firstadress.addressLine);
                   getMarker(tapped.latitude, tapped.longitude);
-                  await FirebaseFirestore.instance.collection("location").add({
-                    "latitude": tapped.latitude,
-                    "longitude": tapped.longitude,
-                    "Adress": firstadress.addressLine,
-                    "country": firstadress.countryCode,
-                    "postalcode": firstadress.postalCode
-                  });
                   setState(() {
                     adress = firstadress.addressLine;
                     country = firstadress.countryCode;
                     postal = firstadress.postalCode;
                   });
+                  await FirebaseFirestore.instance.collection("location").add(
+                      {
+                        "latitude":tapped.latitude,
+                        "longitude":tapped.longitude,
+                        "Adress":firstadress.addressLine,
+                        "country":firstadress.countryCode,
+                        "postalcode":firstadress.postalCode
+                      });
                 },
                 mapType: MapType.normal,
                 compassEnabled: true,
                 trafficEnabled: true,
-                onMapCreated: (GoogleMapController controller) {
+                onMapCreated: (GoogleMapController controller){
                   setState(() {
                     googleMapController = controller;
                   });
                 },
                 initialCameraPosition: CameraPosition(
-                    target: LatLng(position.latitude.toDouble(),
-                        position.longitude.toDouble()),
-                    zoom: 15.0),
-                markers: Set<Marker>.of(marker.values),
+                    target: LatLng(position.latitude.toDouble(),position.longitude.toDouble()),
+                    zoom: 15.0
+                ),
+                markers: Set<Marker>.of(
+                    marker.values
+                ) ,
               ),
             ),
-            Text("Address :" +
-                adress +
-                "contry :" +
-                country +
-                "postal :" +
-                postal)
+            Text(
+                "Address : $adress"
+            )
           ],
         ),
       ),
     );
   }
-
   @override
   void dispose() {
     // TODO: implement dispose
     super.dispose();
+
   }
 }

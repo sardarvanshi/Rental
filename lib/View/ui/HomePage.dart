@@ -11,6 +11,7 @@ import 'package:rantal/View/ui/postproperties.dart';
 import 'package:rantal/View/util/utisUi.dart';
 import '../ui/Favorites.dart';
 import '../ui/user.dart';
+import 'ProprtyMap.dart';
 import 'Search.dart';
 import 'mapview.dart';
 
@@ -67,8 +68,9 @@ class MyHomePageState extends State<MyHomePage> {
   int _selectedTab = 0;
   final _pageOptions = [
     Home(),
-    Userinfo(),
-    FavoritesPage(),
+    MapView(),
+    MymapPage()
+    //FavoritesPage(),
 
   ];
   @override
@@ -136,8 +138,9 @@ class MyHomePageState extends State<MyHomePage> {
               style: ElevatedButton.styleFrom(
                primary: colorlist[2],
               ),
-              onPressed: () {
-                Navigator.of(context).push(MaterialPageRoute(builder: (context)=> MymapPage()));
+              onPressed: () async{
+                await Future.delayed(Duration(seconds: 5));
+                Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context)=> MymapPage()),(Route<dynamic> route)=>false);
               },
               child: Text("Map"),
             ),

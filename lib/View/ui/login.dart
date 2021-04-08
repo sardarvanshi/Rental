@@ -61,11 +61,7 @@ class LoginPageWidgetState extends State<LoginPageWidget> {
                             SizedBox(width: 10),
                             Text(
                                 isUserSignedIn
-                                    ? Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => MyHomePage(),
-                                        ))
+                                    ? 'You are logged in '
                                     : 'Login with Google',
                                 style: TextStyle(color: Colors.white))
                           ],
