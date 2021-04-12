@@ -29,7 +29,7 @@ class MyHomePageState extends State<MyHomePage> {
   //final Connectivity _connectivity = Connectivity();
  // StreamSubscription<ConnectivityResult> _connectivitySubscription;
 
-  SolidController _controller = SolidController();
+
 
 
   @override
@@ -68,10 +68,9 @@ class MyHomePageState extends State<MyHomePage> {
   int _selectedTab = 0;
   final _pageOptions = [
     Home(),
-    MapView(),
-    MymapPage()
-    //FavoritesPage(),
-
+    FavoritesPage(),
+    PostProperties(),
+   ProfilePage(),
   ];
   @override
   Widget build(BuildContext context) {
@@ -109,7 +108,7 @@ class MyHomePageState extends State<MyHomePage> {
 
               ),
              IconButton(icon: Icon(Icons.search_rounded), onPressed: (){
-               _controller.isOpened ? _controller.hide() : _controller.show();
+             Navigator.push(context, MaterialPageRoute(builder: (context)=>searchPage()));
              })
              /* InkWell(
                 onTap: (){
@@ -163,7 +162,7 @@ class MyHomePageState extends State<MyHomePage> {
                             type: BottomNavigationBarType.fixed,
                             showSelectedLabels: false,
                             showUnselectedLabels: false,
-                            backgroundColor: colorlist[1],
+                            backgroundColor: AppbarIconColor,
                             elevation: 0,
                             currentIndex: _selectedTab,
                            // fixedColor: AppbarIconColor,
@@ -182,6 +181,11 @@ class MyHomePageState extends State<MyHomePage> {
                                   'Home',
                               ),
                               BottomNavigationBarItem(
+                                icon: Icon(Icons.favorite),
+                                label:
+                                'Home',
+                              ),
+                              BottomNavigationBarItem(
                                 icon: Icon(Icons.add_rounded),
 
                                 label:
@@ -190,12 +194,10 @@ class MyHomePageState extends State<MyHomePage> {
                               ),
 
                               BottomNavigationBarItem(
-                                icon: Icon(Icons.favorite_rounded),
+                                icon: Icon(Icons.account_circle_outlined),
                                 label:
                                   'Profile',
                               ),
-
-
                             ],
                           ),
                         ),
@@ -203,12 +205,7 @@ class MyHomePageState extends State<MyHomePage> {
                     ))
               ],
             ),
-        bottomSheet: SolidBottomSheet(
-          controller: _controller,
-          draggableBody: true,
-          maxHeight: MediaQuery.of(context).size.height - 119,
-          body: SingleChildScrollView(child: searchPage()),
-        ),
+
       ),
     );
   }

@@ -1,30 +1,18 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class userinfo {
-  String name = "hello  jd";
-  List<dynamic> favorites;
-  Map<String,dynamic> rating;
-  int rows;
-  String email;
-  List<dynamic> Rateid;
-  Favorites postproperties;
-  GeoPoint geoPoint;
+class adminData{
+
+  List<dynamic> categoty;
 
 
-  fetchUserdata() async {
+  fetchAdmindata() async {
     FirebaseFirestore MyfirestoreInstance = FirebaseFirestore.instance;
     print("fetching data");
-    await MyfirestoreInstance.collection('user').doc('0002').get().then((
+    await MyfirestoreInstance.collection('admin').doc('jd01').get().then((
         value) {
-      var result = value.data()['profile'];
-     // print(result);
-      name = result['FirstName'];
-      favorites = result['Favorites'];
-      Rateid = result['Review'];
-      //Rateid = rating.keys.toList();
-      print(Rateid);
-      email = result['Email'];
-      print(email);
+      var result = value.data();
+      print(value.data());
+      categoty = result['category'];
 
       //userInfo = userinfo.fromJson(value.data());
       // print(un.name??"hello");
@@ -32,7 +20,7 @@ class userinfo {
     });
   }
 
- /* userinfo.fromJson(Map<String, dynamic> json) {
+/* userinfo.fromJson(Map<String, dynamic> json) {
     print("IN USERINFO");
     this.name = json['name'];
     print(name);
@@ -47,7 +35,7 @@ class userinfo {
         : null;
   }*/
 
- /* Map<String, dynamic> toJson() {
+/* Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['name'] = this.name;
     if (this.favorites != null) {
@@ -60,20 +48,4 @@ class userinfo {
     }
     return data;
   }*/
-}
-
-class Favorites {
-  List pid;
-
-  Favorites({this.pid});
-
-  Favorites.fromJson(Map<String, dynamic> json) {
-    pid = json['pid'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['pid'] = this.pid;
-    return data;
-  }
 }

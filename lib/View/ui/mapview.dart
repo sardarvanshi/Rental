@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoder/geocoder.dart' as geoco;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:rantal/View/ui/postproperties.dart';
 
 
 
@@ -22,7 +24,7 @@ class _MymapPageState extends State<MymapPage> {
 
   GoogleMapController googleMapController;
   Map<MarkerId,Marker> marker = <MarkerId,Marker>{};
-  Position position;
+  Position position = Position(latitude: 21.233612281366966,longitude:72.82677624374628);
 
   void getMarker(double lat,double long){
     MarkerId markerId = MarkerId((lat.toString() + long.toString()));
@@ -40,7 +42,10 @@ class _MymapPageState extends State<MymapPage> {
   }
 
   void getcurrentLocation() async{
-
+    var status = await Permission.location.status;
+    if (!status.isGranted) {
+      await Permission.location.request();
+    }
     Position currentposition = await Geolocator().getCurrentPosition();
     setState(() {
 
@@ -63,53 +68,65 @@ class _MymapPageState extends State<MymapPage> {
         backgroundColor: Colors.white,
       ),
       body: Container(
-        child: Column(
-          children: [
-            SizedBox(
-              height: 400,
-              child: GoogleMap(
-                onTap: (tapped) async{
-                  final coordinates = geoco.Coordinates(tapped.latitude,tapped.longitude);
-                  print(coordinates.toString());
-                  var address = await geoco.Geocoder.local.findAddressesFromCoordinates(coordinates);
-                  var firstadress = address.first;
-                  print(firstadress.addressLine);
-                  getMarker(tapped.latitude, tapped.longitude);
-                  setState(() {
-                    adress = firstadress.addressLine;
-                    country = firstadress.countryCode;
-                    postal = firstadress.postalCode;
-                  });
-                  await FirebaseFirestore.instance.collection("location").add(
-                      {
-                        "latitude":tapped.latitude,
-                        "longitude":tapped.longitude,
-                        "Adress":firstadress.addressLine,
-                        "country":firstadress.countryCode,
-                        "postalcode":firstadress.postalCode
-                      });
-                },
-                mapType: MapType.normal,
-                compassEnabled: true,
-                trafficEnabled: true,
-                onMapCreated: (GoogleMapController controller){
-                  setState(() {
-                    googleMapController = controller;
-                  });
-                },
-                initialCameraPosition: CameraPosition(
-                    target: LatLng(position.latitude.toDouble(),position.longitude.toDouble()),
-                    zoom: 15.0
-                ),
-                markers: Set<Marker>.of(
-                    marker.values
-                ) ,
-              ),
+        child: SizedBox(
+          height: MediaQuery.of(context).size.height,
+          child: GoogleMap(
+            onTap: (tapped) async{
+              final coordinates = geoco.Coordinates(tapped.latitude,tapped.longitude);
+              print(coordinates.toString());
+              var address = await geoco.Geocoder.local.findAddressesFromCoordinates(coordinates);
+              var firstadress = address.first;
+              print(firstadress.addressLine);
+
+              showDialog(context: context, builder:(context){
+                return AlertDialog(
+                  title: Text("Conform Address"),
+                  content:Text(
+                      "Address : $adress"
+                  ) ,
+                  actions: [
+                    ElevatedButton(
+                        onPressed: ()async{
+                          getMarker(tapped.latitude, tapped.longitude);
+                          await FirebaseFirestore.instance.collection("location").add(
+                              {
+                                "latitude":tapped.latitude,
+                                "longitude":tapped.longitude,
+                                "Adress":firstadress.addressLine,
+                                "country":firstadress.countryCode,
+                                "postalcode":firstadress.postalCode
+                              });
+                          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>PostProperties()));
+                        },
+                        child: Text("Confirm")),
+                    TextButton(onPressed:()=> Navigator.pop(context), child: Text("Cancel")),
+                  ],
+                );
+              });
+
+              setState(() {
+                adress = firstadress.addressLine;
+                country = firstadress.countryCode;
+                postal = firstadress.postalCode;
+              });
+
+            },
+            mapType: MapType.normal,
+            compassEnabled: true,
+            trafficEnabled: true,
+            onMapCreated: (GoogleMapController controller){
+              setState(() {
+                googleMapController = controller;
+              });
+            },
+            initialCameraPosition: CameraPosition(
+                target: LatLng(position.latitude.toDouble(),position.longitude.toDouble()),
+                zoom: 15.0
             ),
-            Text(
-                "Address : $adress"
-            )
-          ],
+            markers: Set<Marker>.of(
+                marker.values
+            ) ,
+          ),
         ),
       ),
     );

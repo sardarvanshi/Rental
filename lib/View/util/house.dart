@@ -5,7 +5,7 @@ import 'package:rantal/View/util/utisUi.dart';
 Widget propertyList(
     BuildContext context,
     String imageurl,
-    String price,
+    int price,
     String name,
     String place,
     double rating,
@@ -43,7 +43,7 @@ Widget propertyList(
                         ]),
                     child: Center(
                       child: Text(
-                        price,
+                        price.toString(),
                         style: TextStyle(color: Colors.white),
                       ),
                     )),

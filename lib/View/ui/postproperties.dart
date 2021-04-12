@@ -22,7 +22,7 @@ class _PostPropertiesState extends State<PostProperties> {
 
   FirebaseFirestore Myfirebasefirestore = FirebaseFirestore.instance;
   FirebaseStorage storage = FirebaseStorage.instanceFor();
-  Map data ;
+  Map<String,dynamic> data ;
   io.File _image;
   String Imageurl;
 
@@ -40,6 +40,7 @@ class _PostPropertiesState extends State<PostProperties> {
 
  Future<void> postData()async {
    var id= "uid005" + dt.toString();
+   await Myfirebasefirestore.collection('properties').doc(id).set(data);
    await Myfirebasefirestore.collection('properties').doc(id).set(
      {
        "name" :name,
@@ -100,7 +101,7 @@ reference.putFile(_image).whenComplete((){
                   paste: true
                 ),
                 autocorrect: true,
-                onChanged: (value){name=value;},
+                onChanged: (value){data.addAll({"name":value});},
                 decoration: InputDecoration(
                   hintText: "enter",
                  // errorText: "error",
@@ -116,7 +117,7 @@ reference.putFile(_image).whenComplete((){
                     paste: true
                 ),
                 autocorrect: true,
-                onChanged: (value){price=value;},
+                onChanged: (value){data.addAll({"price":value});},
                 decoration: InputDecoration(
                   hintText: "enter price",
                   // errorText: "error",

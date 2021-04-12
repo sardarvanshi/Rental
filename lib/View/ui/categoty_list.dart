@@ -35,6 +35,9 @@ class _Category_ListState extends State<Category_List> {
                     itemBuilder: (BuildContext context, int index) {
                       var result = snapshot.data.docs.elementAt(index);
                       print(result);
+                      if(snapshot.data.docs.length == 0){
+                        return Center(child: Text("NO Data AVailable"),);
+                      }
                       return InkWell(
                         onTap: () {
                           Navigator.push(

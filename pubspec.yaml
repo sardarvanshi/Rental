@@ -29,11 +29,12 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.0
   http: ^0.13.0
+
   # firebase
   firebase_auth:
   google_sign_in:
   cloud_firestore: ^1.0.0
-  firebase_core: ^1.0.0
+  firebase_core:
   firebase_storage: ^8.0.1
   image_cropper:
   image_picker:
@@ -44,19 +45,26 @@ dependencies:
   # statemanagement
   rxdart:
   google_fonts:
-  provider: ^5.0.0
+  provider: ^4.2.0
 
 
   # Googlemap
+  flutter_google_places:
+
   google_maps_flutter: ^0.5.13
   geocoder:
   geolocator: ^5.3.1
+  permission_handler: ^6.1.1
 
 
 
   # connection status
 
   # for ui
+  font_awesome_flutter:
+  animations: ^1.1.2
+  country_state_city_picker: ^1.2.7
+  group_button:
   flutter_native_splash: ^1.1.5+1
   solid_bottom_sheet: ^0.1.9
   cached_network_image: ^2.5.1

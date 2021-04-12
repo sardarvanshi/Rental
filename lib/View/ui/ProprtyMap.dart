@@ -17,7 +17,8 @@ class _MapViewState extends State<MapView> {
     final MarkerId markerId=MarkerId(markerIdval);
     final Marker marker=Marker(markerId: markerId,
         position: LatLng(specify['latitude'],specify['longitude']),
-        infoWindow: InfoWindow(title: "property",snippet: specify['Adress'])
+        infoWindow: InfoWindow(title: "property",snippet: specify['Adress']),
+        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
     );
     setState(() {
       markers[markerId]=marker;
@@ -53,8 +54,8 @@ class _MapViewState extends State<MapView> {
         icon: BitmapDescriptor.defaultMarker,
       ),].toSet();
     }
-    return Scaffold(
-      body: GoogleMap(
+    return
+       GoogleMap(
         markers: Set<Marker>.of(markers.values),
         mapType: MapType.normal,
         compassEnabled: true,
@@ -69,7 +70,6 @@ class _MapViewState extends State<MapView> {
                22.1205, 72.823212),
             zoom: 15.0),
 
-      ),
     );
   }
 }

@@ -29,9 +29,10 @@ class _MyDetailState extends State<MyDetail> {
   double rate;
 
   void checkfav() async {
+    print("checking fav");
     await firebaseFirestore
         .collection("user")
-        .where("favorites", arrayContains: widget.result.id)
+        .where("profile.Favorites",whereIn: widget.result.id)
         .get()
         .then((value) {
       setState(() {
@@ -43,15 +44,17 @@ class _MyDetailState extends State<MyDetail> {
   }
 
   void checkRating() async {
-    await firebaseFirestore
-        .collection("user")
-        .where("rating", arrayContains: widget.result.id)
-        .get()
-        .then((value) {
-      setState(() {
-        isRated = value.docs.isNotEmpty;
-      });
-
+    print("checking rate");
+    await firebaseFirestore.collection('user').doc('0002').get().then((
+        value) {
+      var result = value.data()['profile'];
+      Map<String,dynamic>rating = result['Review'];
+      List<dynamic> keylist = rating.keys.toList();
+      if(keylist.contains(widget.result.id)) {
+        setState(() {
+            isRated = true;
+        });
+      }
       print(fav);
     });
   }
@@ -61,26 +64,28 @@ class _MyDetailState extends State<MyDetail> {
       "rate": widget.result['rate'] + rate,
       "rcount": widget.result['rcount'] + 1,
     });
-    firebaseFirestore.collection("user").doc("0001uid").update({
-        "rating" : FieldValue.arrayUnion([widget.result.id]),
-    });
+    firebaseFirestore.collection("user").doc("0002").update({
+      "profile.Review" :  FieldValue.arrayUnion([widget.result.id]),
+      }
+    );
     setState(() {
       rate = widget.result['rate'] / widget.result['rcount'];
+      isRated=true;
     });
     print(widget.result['rate']);
   }
 
   void favoritehandle() {
-    firebaseFirestore.collection("user").doc("0001uid").update({
-      "favorites": FieldValue.arrayUnion([widget.result.id]),
+    firebaseFirestore.collection("user").doc("0002").update({
+      "profile.Favorites": FieldValue.arrayUnion([widget.result.id]),
     });
     //user.fetchUserdata();
     print(widget.result['rate']);
   }
 
   void favoritefalsehandle() {
-    firebaseFirestore.collection("user").doc("0001uid").update({
-      "favorites": FieldValue.arrayRemove([widget.result.id]),
+    firebaseFirestore.collection("user").doc("0002").update({
+      "profile.Favorites": FieldValue.arrayRemove([widget.result.id]),
     });
     print(widget.result.id);
   }
@@ -91,7 +96,7 @@ class _MyDetailState extends State<MyDetail> {
     super.initState();
     checkfav();
     rate = widget.result['rate'] / widget.result['rcount'];
-    checkRating();
+   // checkRating();
     print(fav.toString() + "------");
   }
 
@@ -101,176 +106,175 @@ class _MyDetailState extends State<MyDetail> {
     return SafeArea(
       child: Scaffold(
           body: Container(
-        child: Stack(
-          children: [
-            ListView(
-              children: <Widget>[
-                Stack(
+            child: Stack(
+              children: [
+                ListView(
                   children: <Widget>[
-                    SizedBox(
-                        height: 300.0,
-                        child: Stack(
-                          children: <Widget>[
-                            Carousel(
-                              images: [
-                                NetworkImage(widget.result['image']),
-                                // Photo from https://unsplash.com/photos/561igiTyvSk
-                                NetworkImage(widget.result['image']),
-                                // Photo from https://unsplash.com/photos/xpDHTc-pkog
-                                NetworkImage(widget.result['image']),
-                                // Photo from https://unsplash.com/photos/KtOid0FLjqU
-                                NetworkImage(widget.result['image']),
-                                // Photo from https://unsplash.com/photos/Luh5Pjxg_Vs
-                                NetworkImage(widget.result['image']),
-                                // Photo from https://unsplash.com/photos/BVd8jS5H7VU
+                    Stack(
+                      children: <Widget>[
+                        SizedBox(
+                            height: 300.0,
+                            child: Stack(
+                              children: <Widget>[
+                                Carousel(
+                                  images: [
+                                    NetworkImage(widget.result['image']),
+                                    // Photo from https://unsplash.com/photos/561igiTyvSk
+                                    NetworkImage(widget.result['image']),
+                                    // Photo from https://unsplash.com/photos/xpDHTc-pkog
+                                    NetworkImage(widget.result['image']),
+                                    // Photo from https://unsplash.com/photos/KtOid0FLjqU
+                                    NetworkImage(widget.result['image']),
+                                    // Photo from https://unsplash.com/photos/Luh5Pjxg_Vs
+                                    NetworkImage(widget.result['image']),
+                                    // Photo from https://unsplash.com/photos/BVd8jS5H7VU
+                                  ],
+                                  dotSize: 4.0,
+                                  dotSpacing: 15.0,
+                                  autoplay: false,
+                                  dotColor: Colors.white,
+                                  indicatorBgPadding: 50.0,
+                                  dotBgColor: Colors.transparent,
+                                  borderRadius: false,
+                                  moveIndicatorFromBottom: 200.0,
+                                  noRadiusForIndicator: true,
+                                ),
                               ],
-                              dotSize: 4.0,
-                              dotSpacing: 15.0,
-                              autoplay: false,
-                              dotColor: Colors.white,
-                              indicatorBgPadding: 50.0,
-                              dotBgColor: Colors.transparent,
-                              borderRadius: false,
-                              moveIndicatorFromBottom: 200.0,
-                              noRadiusForIndicator: true,
-                            ),
-                          ],
-                        )),
-                    Padding(
-                      padding: EdgeInsets.only(top: 270, left: 20, right: 20),
-                      child: Container(
-                          height: 100.0,
-                          width: MediaQuery.of(context).size.width - 24.0,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10.0),
-                            color: colorlist[2],
-                            /*boxShadow: [
+                            )),
+                        Padding(
+                          padding: EdgeInsets.only(top: 270, left: 20, right: 20),
+                          child: Container(
+                              height: 100.0,
+                              width: MediaQuery.of(context).size.width - 24.0,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10.0),
+                                color: colorlist[2],
+                                /*boxShadow: [
                                     BoxShadow(
                                         blurRadius: 2.0,
                                         color: Colors.grey.withOpacity(0.3),
                                         spreadRadius: 2.0)
                                   ]*/
-                          ),
-                          child: Padding(
-                            padding: EdgeInsets.only(left: 20),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Icon(
-                                  Icons.location_on_outlined,
-                                  size: 50,
-                                  color: colorlist[1],
+                              ),
+                              child: Padding(
+                                padding: EdgeInsets.only(left: 20),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    Icon(
+                                      Icons.location_on_outlined,
+                                      size: 50,
+                                      color: colorlist[1],
+                                    ),
+                                    Text("Map View"),
+                                  ],
                                 ),
-                                Text("Map View"),
-                              ],
-                            ),
-                          )),
+                              )),
+                        ),
+                      ],
+                    ),
+                    Divider(),
+                    RatingBarIndicator(
+                      itemSize: 30.0,
+                      rating: rate,
+                      itemBuilder: (context, _) => Icon(
+                        Icons.star_rounded,
+                        color: colorlist[1],
+                      ),
+                    ),
+                       /* : RatingBar.builder(
+                      initialRating: rate,
+                      minRating: 1,
+                      direction: Axis.horizontal,
+                      allowHalfRating: true,
+                      itemCount: 5,
+                      itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+                      itemBuilder: (context, _) => Icon(
+                        Icons.star_rounded,
+                        color: colorlist[1],
+                      ),
+                      onRatingUpdate: (rating) {
+                        ratingHandler(rating);
+                      },
+                    ),*/
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        '${widget.result['rprice']} Rs/${widget.result['term']}',
+                        style: Propertyname,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                          widget.result['name'] + widget.result['rate'].toString(),
+                          style: term),
+                    ),
+                    Divider(),
+                    Padding(
+                      padding: EdgeInsets.only(top: 10, bottom: 15, left: 14),
+                      child: Text(
+                        'About',
+                        style: GoogleFonts.robotoSlab(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    about_hotel(widget.result['about']),
+                    about_hotel(widget.result['about']),
+                    about_hotel(widget.result['about']),
+                    about_hotel(widget.result['about']),
+                    about_hotel(widget.result['about']),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(right: 10, top: 20),
+                      child: CircleAvatar(
+                        backgroundColor: colorlist[2],
+                        child: fav
+                            ? IconButton(
+                          icon: Icon(Icons.favorite),
+                          color: colorlist[1],
+                          onPressed: () {
+                            favoritefalsehandle();
+                            setState(() {
+                              // fav? favcon = Icon(Icons.favorite,color: colorlist[1],):favcon = Icon(Icons.favorite_border,color:Colors.white);
+                              fav ? fav = false : fav = true;
+                            });
+                            user.fetchUserdata();
+                          },
+                        )
+                            : IconButton(
+                          icon: Icon(Icons.favorite_border),
+                          color: Colors.white,
+                          onPressed: () {
+                            favoritehandle();
+                            setState(() {
+                              //  fav? favcon = Icon(Icons.favorite,color: colorlist[1],):favcon = Icon(Icons.favorite_border,color:Colors.white);
+                              fav ? fav = false : fav = true;
+                            });
+                            user.fetchUserdata();
+                          },
+                        ),
+                      ),
                     ),
                   ],
                 ),
-                Divider(),
-                isRated
-                    ? RatingBarIndicator(
-                        itemSize: 30.0,
-                        rating: rate,
-                        itemBuilder: (context, _) => Icon(
-                          Icons.star_rounded,
-                          color: colorlist[1],
-                        ),
-                      )
-                    : RatingBar.builder(
-                        initialRating: rate,
-                        minRating: 1,
-                        direction: Axis.horizontal,
-                        allowHalfRating: true,
-                        itemCount: 5,
-                        itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
-                        itemBuilder: (context, _) => Icon(
-                          Icons.star_rounded,
-                          color: colorlist[1],
-                        ),
-                        onRatingUpdate: (rating) {
-                          ratingHandler(rating);
-                        },
-                      ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    '${widget.result['rprice']} Rs/${widget.result['term']}',
-                    style: Propertyname,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                      widget.result['name'] + widget.result['rate'].toString(),
-                      style: term),
-                ),
-                Divider(),
-                Padding(
-                  padding: EdgeInsets.only(top: 10, bottom: 15, left: 14),
-                  child: Text(
-                    'About',
-                    style: GoogleFonts.robotoSlab(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                about_hotel(widget.result['about']),
-                about_hotel(widget.result['about']),
-                about_hotel(widget.result['about']),
-                about_hotel(widget.result['about']),
-                about_hotel(widget.result['about']),
+                BookNow(),
               ],
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(right: 10, top: 20),
-                  child: CircleAvatar(
-                    backgroundColor: colorlist[2],
-                    child: fav
-                        ? IconButton(
-                            icon: Icon(Icons.favorite),
-                            color: colorlist[1],
-                            onPressed: () {
-                              favoritefalsehandle();
-                              setState(() {
-                                // fav? favcon = Icon(Icons.favorite,color: colorlist[1],):favcon = Icon(Icons.favorite_border,color:Colors.white);
-                                fav ? fav = false : fav = true;
-                              });
-                              user.fetchUserdata();
-                            },
-                          )
-                        : IconButton(
-                            icon: Icon(Icons.favorite_border),
-                            color: Colors.white,
-                            onPressed: () {
-                              favoritehandle();
-                              setState(() {
-                                //  fav? favcon = Icon(Icons.favorite,color: colorlist[1],):favcon = Icon(Icons.favorite_border,color:Colors.white);
-                                fav ? fav = false : fav = true;
-                              });
-                              user.fetchUserdata();
-                            },
-                          ),
-                  ),
-                ),
-              ],
-            ),
-            BookNow(),
-          ],
-        ),
-      )),
+          )),
     );
   }
 
   Widget about_hotel(
-    String description,
-  ) {
+      String description,
+      ) {
     return Padding(
         padding: EdgeInsets.only(left: 14, top: 6, right: 14),
         child: Column(
