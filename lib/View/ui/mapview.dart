@@ -3,13 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoder/geocoder.dart' as geoco;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:location/location.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:rantal/View/ui/postproperties.dart';
-
-
-
+import 'package:rantal/model/propertyModel.dart';
 
 class MymapPage extends StatefulWidget {
+  LocationData locationData;
+
+  MymapPage({this.locationData});
+
   @override
   _MymapPageState createState() => _MymapPageState();
 }
@@ -41,6 +44,32 @@ class _MymapPageState extends State<MymapPage> {
 
   }
 
+/*  void getLocation() async {
+    print(PropertyModel.id);
+    _serviceEnabled = await location.serviceEnabled();
+    if (!_serviceEnabled) {
+      _serviceEnabled = await location.requestService();
+      if (!_serviceEnabled) {
+        return;
+      }
+    }
+
+    _permissionGranted = await location.hasPermission();
+    if (_permissionGranted == PermissionStatus.denied) {
+      _permissionGranted = await location.requestPermission();
+      if (_permissionGranted != PermissionStatus.granted) {
+        return;
+      }
+    }
+
+    _locationData = await location.getLocation();
+    print(_locationData.altitude);
+    // DM.Ld = _locationData;
+    setState(() {
+      PropertyModel.Location['Longitude']=_locationData.longitude;
+      PropertyModel.Location['Latitude']=_locationData.latitude;
+    });
+  }*/
   void getcurrentLocation() async{
     var status = await Permission.location.status;
     if (!status.isGranted) {
@@ -55,9 +84,9 @@ class _MymapPageState extends State<MymapPage> {
 
   @override
   void initState() {
+    getcurrentLocation();
     // TODO: implement initState
     super.initState();
-    getcurrentLocation();
   }
 
 
@@ -72,32 +101,39 @@ class _MymapPageState extends State<MymapPage> {
           height: MediaQuery.of(context).size.height,
           child: GoogleMap(
             onTap: (tapped) async{
-              final coordinates = geoco.Coordinates(tapped.latitude,tapped.longitude);
+              final coordinates =
+                  geoco.Coordinates(tapped.latitude, tapped.longitude);
               print(coordinates.toString());
-              var address = await geoco.Geocoder.local.findAddressesFromCoordinates(coordinates);
+              var address = await geoco.Geocoder.local
+                  .findAddressesFromCoordinates(coordinates);
               var firstadress = address.first;
               print(firstadress.addressLine);
-
-              showDialog(context: context, builder:(context){
-                return AlertDialog(
-                  title: Text("Conform Address"),
-                  content:Text(
-                      "Address : $adress"
-                  ) ,
-                  actions: [
-                    ElevatedButton(
-                        onPressed: ()async{
-                          getMarker(tapped.latitude, tapped.longitude);
-                          await FirebaseFirestore.instance.collection("location").add(
-                              {
-                                "latitude":tapped.latitude,
-                                "longitude":tapped.longitude,
-                                "Adress":firstadress.addressLine,
-                                "country":firstadress.countryCode,
-                                "postalcode":firstadress.postalCode
+              print(firstadress.locality);
+              print(firstadress.toMap());
+              showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      title: Text("Conform Address"),
+                      content: Text("Address : $adress"),
+                      actions: [
+                        ElevatedButton(
+                            onPressed: () async {
+                              getMarker(tapped.latitude, tapped.longitude);
+                              await FirebaseFirestore.instance
+                                  .collection("location")
+                                  .doc(PropertyModel.id)
+                                  .set({
+                                "coordinates": firstadress.coordinates.toMap(),
+                                "longitude": tapped.longitude,
+                                "addressLine": firstadress.addressLine,
+                                "country": firstadress.countryCode,
+                                "postalcode": firstadress.postalCode
                               });
-                          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>PostProperties()));
-                        },
+                              int count = 0;
+                              Navigator.of(context)
+                                  .popUntil((_) => count++ >= 2);
+                            },
                         child: Text("Confirm")),
                     TextButton(onPressed:()=> Navigator.pop(context), child: Text("Cancel")),
                   ],

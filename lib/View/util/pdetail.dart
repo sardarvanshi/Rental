@@ -32,7 +32,7 @@ class _MyDetailState extends State<MyDetail> {
     print("checking fav");
     await firebaseFirestore
         .collection("user")
-        .where("profile.Favorites",whereIn: widget.result.id)
+        .where("profile.Favorites", arrayContains: widget.result.id)
         .get()
         .then((value) {
       setState(() {
@@ -91,18 +91,23 @@ class _MyDetailState extends State<MyDetail> {
   }
 
   @override
+  void dispose() {
+    context.read<userinfo>().fetchUserdata();
+    super.dispose();
+  }
+
+  @override
   void initState() {
     // TODO: implement initState
     super.initState();
     checkfav();
     rate = widget.result['rate'] / widget.result['rcount'];
-   // checkRating();
+    // checkRating();
     print(fav.toString() + "------");
   }
 
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<userinfo>(context);
     return SafeArea(
       child: Scaffold(
           body: Container(
@@ -246,7 +251,6 @@ class _MyDetailState extends State<MyDetail> {
                               // fav? favcon = Icon(Icons.favorite,color: colorlist[1],):favcon = Icon(Icons.favorite_border,color:Colors.white);
                               fav ? fav = false : fav = true;
                             });
-                            user.fetchUserdata();
                           },
                         )
                             : IconButton(
@@ -258,7 +262,6 @@ class _MyDetailState extends State<MyDetail> {
                               //  fav? favcon = Icon(Icons.favorite,color: colorlist[1],):favcon = Icon(Icons.favorite_border,color:Colors.white);
                               fav ? fav = false : fav = true;
                             });
-                            user.fetchUserdata();
                           },
                         ),
                       ),
@@ -308,8 +311,7 @@ class BookNow extends StatelessWidget {
                     height: 60,
                     decoration: BoxDecoration(
                       border: Border.all(
-                        color: colorlist[1],
-                      ),
+                          color: AppbarIconColor),
                       color: Colors.white,
                       borderRadius: BorderRadius.all(Radius.circular(10.0)),
                     ),
@@ -329,7 +331,7 @@ class BookNow extends StatelessWidget {
                   child: Container(
                     height: 60,
                     decoration: BoxDecoration(
-                      color: colorlist[1],
+                      color: AppbarIconColor,
                       borderRadius: BorderRadius.all(Radius.circular(10.0)),
                     ),
                     child: MaterialButton(

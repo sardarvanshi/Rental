@@ -1,189 +1,169 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:country_state_city_picker/country_state_city_picker.dart';
+
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:group_button/group_button.dart';
 import 'package:provider/provider.dart';
 import 'package:rantal/View/util/Addresssearch.dart';
+import 'package:rantal/View/util/house.dart';
 import 'package:rantal/View/util/utisUi.dart';
 import 'package:rantal/model/SearchModel.dart';
+import 'package:rantal/model/userinfo_model.dart';
 import 'package:uuid/uuid.dart';
 import 'package:rantal/model/admindata.dart';
 import 'package:rantal/model/admindata.dart';
 import 'package:rantal/model/admindata.dart';
 
-class searchPage extends StatefulWidget {
-  @override
-  _searchPageState createState() => _searchPageState();
-}
+class searchPage extends SearchDelegate {
+  final List<dynamic> searchlist;
+  String selectedResult;
 
-class _searchPageState extends State<searchPage> {
-  RangeValues Myslidervalue = RangeValues(10000, 50000);
-  Color _color = Colors.white;
-  List<String> type = [];
-  final _controller = TextEditingController();
-  var place;
-  var ptype;
-  RangeValues range;
-  String countryValue;
-  String stateValue;
-  String cityValue;
+  searchPage({this.recentList, this.searchlist});
 
-
-  getType() {
-    final Admin = Provider.of<adminData>(context);
-    print(Admin.categoty.first);
-    type.clear();
-    Admin.categoty.forEach((element) {
-
-        type.add(element);
-      });
-    }
+  List<dynamic> recentList;
 
   @override
-  void initState() {
-    super.initState();
+  List<Widget> buildActions(BuildContext context) {
+    return <Widget>[
+      IconButton(
+          icon: Icon(Icons.close_rounded),
+          onPressed: () {
+            query = "";
+          })
+    ];
+    throw UnimplementedError();
   }
 
   @override
-  Widget build(BuildContext context) {
-    getType();
-    return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-            children: [
-              Container(
-                child: ListView(
-                  shrinkWrap: true,
-                  children: [
-                    Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child:
+  Widget buildLeading(BuildContext context) {
+    print(1);
+    return IconButton(
+        icon: Icon(Icons.arrow_back),
+        onPressed: () {
+          print(recentList);
+          final uid = context.read<User>().uid;
+          FirebaseFirestore.instance
+              .collection('user')
+              .doc(uid)
+              .update({"recentSearch": recentList.reversed.toList()});
+          context.read<userinfo>().fetchUserdata();
+          Navigator.pop(context);
+        });
+    throw UnimplementedError();
+  }
 
-                      SelectState(
-                          dropdownColor: AppbarIconColor,
-                          onCountryChanged: (value) {
-                            setState(() {
-                              countryValue = value;
-                            });
-                          },
-                          onStateChanged:(value) {
-                            setState(() {
-                              stateValue = value;
-                            });
-                          },
-                          onCityChanged:(value) {
-                            setState(() {
-                              cityValue = value;
-                            });
-                          },
+  bool isReturn;
 
-                        ),
-
-                      /*TextFormField(
-                          onChanged: (value){
-                            place=value;
-                          },
-                          decoration: InputDecoration(
-                            filled: true,
-                            fillColor: Colors.white60,
-                            icon: Icon(Icons.search_rounded),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Colors.blueAccent,
-                              ),
-                              borderRadius: BorderRadius.circular(10.0),
-                            ),
-                            hintText: "search city",
-                          ),
-                          autovalidateMode: AutovalidateMode.always,
-                        )*/),
-                  ],
-                ),
-              ),
-              Text("Property type"),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: GroupButton(
-                  buttonHeight: 50,
-                  buttonWidth: 100,
-                  spacing: 10,
-                  isRadio: true,
-                  direction: Axis.horizontal,
-                  onSelected: (index, isSelected) {
-                    print('$index button is ${isSelected ? 'selected' : 'unselected'}');
-                    ptype = type.elementAt(index);
-                  },
-                  buttons: type,
-
-                  selectedTextStyle: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 16,
-                    color: Colors.red,
-                  ),
-                  unselectedTextStyle: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14,
-                    color: Colors.grey[600],
-                  ),
-                  selectedColor: Colors.white,
-                  unselectedColor: Colors.grey[300],
-                  selectedBorderColor: Colors.red,
-                  unselectedBorderColor: Colors.grey[500],
-                  borderRadius: BorderRadius.circular(5.0),
-                  selectedShadow: <BoxShadow>[BoxShadow(color: Colors.transparent)],
-                  unselectedShadow: <BoxShadow>[BoxShadow(color: Colors.transparent)],
-                )
-              ),
-        Text("Select Range"),
-        Container(
-          child: RangeSlider(
-            values: Myslidervalue,
-            min: 0,
-            max: 50000,
-            labels: RangeLabels(
-              Myslidervalue.start.round().toString(),
-              Myslidervalue.end.round().toString(),
-            ),
-            onChanged: (RangeValues values) {
-              setState(() {
-                Myslidervalue = values;
-                range = values;
-                print(Myslidervalue);
-              });
-            },
-          ),
-        ),
-              Text(Myslidervalue.start.toInt().toString()+" - " + Myslidervalue.end.toInt().toString()),
-              ButtonBar(
-                children: [
-                  ElevatedButton(
-                      onPressed: (){
-                        try {
-                          FirebaseFirestore.instance.collection("properties")
-                              .where("city", isEqualTo: "surat")//.where(
-                             // "rprice", isGreaterThanOrEqualTo: range.start)
-                              //.where("rprice", isLessThanOrEqualTo: range.end)
-                              .get()
-                              .then((value) {
-                            print(value.size);
-                            print(value.docs.first.id);
-                          });
-                        }
-                        catch(e){
-                          print(e);
-                        }
-                      },
-                      child: Text("Done"),
-                  ),
-                ],
-              )
-            ],
-        ),
-      ),
+  @override
+  Widget buildResults(BuildContext context) {
+    print(2);
+    final user = context.read<User>();
+    /*if(!recentList.contains(query)){
+    print(":::::::");
+    Provider.of<userinfo>(context,listen: false).handle_recentSearchhandler(query,recentList);
+  }*/
+    print(query + "........");
+    print(recentList.toString() + "............");
+    return WillPopScope(
+      onWillPop: () async {
+        print("POP");
+        return true;
+      },
+      child: Container(
+          child: StreamBuilder(
+        stream: FirebaseFirestore.instance
+            .collection('properties')
+            .where("Location", arrayContains: query)
+            .snapshots(),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          if (snapshot.hasData) {
+            if (snapshot.data.docs.length == 0) {
+              return Center(
+                child: Text("No Data Found"),
+              );
+            }
+            print(snapshot.data.docs.length);
+            return ListView.builder(
+                itemCount: snapshot.data.docs.length,
+                itemBuilder: (context, index) {
+                  var result = snapshot.data.docs.elementAt(index);
+                  return buildVerticalItem(context, index, result);
+                });
+          }
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        },
+      )),
     );
+    throw UnimplementedError();
+  }
+
+  @override
+  Widget buildSuggestions(BuildContext context) {
+    print(3);
+    print(recentList);
+    List<dynamic> suggestionList = [];
+    query.isEmpty
+        ? suggestionList = recentList
+        : suggestionList
+            .addAll(searchlist.where((element) => element.contains(query)));
+    return ListView.builder(
+        itemCount: suggestionList.length,
+        itemBuilder: (context, index) {
+          return ListTile(
+            title: Text(suggestionList[index]),
+            onTap: () {
+              query = suggestionList.elementAt(index);
+              selectedResult = suggestionList.elementAt(index);
+              if (recentList.length <= 5) {
+                if (!recentList.contains(selectedResult)) {
+                  recentList = recentList.reversed.toList();
+                  print("------" + recentList.toString());
+                  recentList.add(selectedResult);
+                  print(recentList);
+                  recentList = recentList.reversed.toList();
+                  print(recentList);
+                } else {
+                  recentList.toSet().toList();
+                  recentList.remove(selectedResult);
+                  recentList = recentList.reversed.toList();
+                  print("------" + recentList.toString());
+                  recentList.add(selectedResult);
+                  print(recentList);
+                  recentList = recentList.reversed.toList();
+                  print(recentList);
+                }
+              } else {
+                recentList = recentList.reversed.toList();
+                recentList.removeAt(0);
+                print(recentList);
+                recentList = recentList.reversed;
+
+                if (!recentList.contains(selectedResult)) {
+                  recentList = recentList.reversed.toList();
+                  print("------" + recentList.toString());
+                  recentList.add(selectedResult);
+                  print(recentList);
+                  recentList = recentList.reversed.toList();
+                  print(recentList);
+                } else {
+                  recentList.toSet().toList();
+                  recentList.remove(selectedResult);
+                  recentList = recentList.reversed.toList();
+                  print("------" + recentList.toString());
+                  recentList.add(selectedResult);
+                  print(recentList);
+                  recentList = recentList.reversed.toList();
+                  print(recentList);
+                }
+              }
+              showResults(context);
+            },
+          );
+        });
   }
 }
-
 
 //AIzaSyB653pCTSjptn5D5xpTGcUZcPkTHsa2u4c

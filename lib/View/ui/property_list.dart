@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rantal/View/ui/Propety_detail.dart';
 import 'package:rantal/View/util/pdetail.dart';
-import '../util/house.dart';
+import 'package:rantal/View/util/house.dart';
 
 class PropetyList extends StatefulWidget {
   @override
@@ -36,14 +36,7 @@ class _PropetyListState extends State<PropetyList> {
                               MaterialPageRoute(
                                   builder: (context) => MyDetail(result)));
                         },
-                        child: propertyList(
-                          context,
-                          result['image'],
-                          result['rprice'],
-                          result['name'],
-                          result['city'],
-                          result['rate'],
-                        ),
+                        child: buildVerticalItem(context, index, result),
                       );
                     });
               }

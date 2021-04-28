@@ -1,7 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:provider/provider.dart';
 import 'package:rantal/View/auth/widgets/sign_in_up_bar.dart';
 import 'package:rantal/View/ui/HomePage.dart';
+import 'package:rantal/Provider/AuthProvider.dart';
+import 'package:rantal/View/util/forgetpass.dart';
+import 'package:rantal/model/admindata.dart';
+import 'package:rantal/model/userinfo_model.dart';
 //import 'package:lit_firebase_auth/lit_firebase_auth.dart';
 
 import '../../../config/palette.dart';
@@ -25,39 +31,22 @@ class _SignInState extends State<SignIn> {
   var passwordcontrol = TextEditingController();
   var emailControl = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  String Email;
+  String Password;
+  bool isLoading = false;
   bool validate = false;
-  bool isValid=false;
+  bool isValid = false;
 
   void validateAndSave() {
     final FormState form = _formKey.currentState;
     if (form.validate()) {
       setState(() {
         validate = true;
+        isLoading = true;
       });
       print('Form is valid');
     } else {
       print('Form is invalid');
-    }
-  }
-
-  signinUser()async{
-    try {
-      UserCredential userCredential = await FirebaseAuth
-          .instance
-          .signInWithEmailAndPassword(
-        email:emailControl.value.toString(),
-        password: passwordcontrol.value.toString(),
-      );
-      print(userCredential.user.uid);
-    } on FirebaseAuthException catch (e) {
-      setState(() {
-        isValid = false;
-      });
-      if (e.code == 'user-not-found') {
-        print('No user found for that email.');
-      } else if (e.code == 'wrong-password') {
-        print('Wrong password provided for that user.');
-      }
     }
   }
 
@@ -86,6 +75,7 @@ class _SignInState extends State<SignIn> {
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     child: TextFormField(
+                      onChanged: (value) => Email = value,
                       controller: emailControl,
                       decoration: signInInputDecoration(hintText: 'Email'),
                       validator: (value) {
@@ -93,30 +83,72 @@ class _SignInState extends State<SignIn> {
                       },
                     ),
                     /*EmailTextFormField(
-                        decoration: signInInputDecoration(hintText: 'Email'),
-                      ),*/
+                            decoration: signInInputDecoration(hintText: 'Email'),
+                          ),*/
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     child: TextFormField(
+                      onChanged: (value) => Password = value,
                       controller: passwordcontrol,
                       validator: (value) =>
                           value.isEmpty ? 'Enter Password' : null,
                       decoration: signInInputDecoration(hintText: 'Password'),
                     ),
                   ),
-                  SignInBar(
-                    label: 'Sign in',
-                    isLoading: false,
-                    onPressed: () {
-                      validateAndSave();
-                      if (validate) {
-                        signinUser();
-                        if(isValid) {
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      TextButton(
+                        child: Text(
+                          "Forget Password",
+                          style: TextStyle(
+                            fontSize: 20,
+                            color: Palette.darkBlue,
+                          ),
+                        ),
+                        onPressed: () {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
+                                  builder: (context) => forgetPass()));
+                        },
+                      ),
+                    ],
+                  ),
+                  SignInBar(
+                    label: 'Sign in',
+                    isLoading: isLoading,
+                    onPressed: () {
+                      validateAndSave();
+                      if (validate) {
+                        FirebaseAuth.instance
+                            .signInWithEmailAndPassword(
+                          email: emailControl.text.toString().trim(),
+                          password: passwordcontrol.text.toString().trim(),
+                        )
+                            .then((value) {
+                          print(value.user);
+                          Fluttertoast.showToast(
+                              msg: "Sign in  Successfully Created",
+                              toastLength: Toast.LENGTH_SHORT);
+                          Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
                                   builder: (context) => MyHomePage()));
+                          isValid = true;
+                          return true;
+                        }).onError((error, stackTrace) {
+                          setState(() {
+                            isLoading = false;
+                          });
+
+                          return Fluttertoast.showToast(
+                              msg: error.toString(),
+                              toastLength: Toast.LENGTH_LONG);
+                        });
+
+                        if (isValid) {
                           // context.signInWithEmailAndPassword();
                         }
                       }

@@ -1,19 +1,19 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 
-class adminData{
-
-  List<dynamic> categoty;
-
+class adminData {
+  List<dynamic> categoty = [];
 
   fetchAdmindata() async {
     FirebaseFirestore MyfirestoreInstance = FirebaseFirestore.instance;
     print("fetching data");
-    await MyfirestoreInstance.collection('admin').doc('jd01').get().then((
-        value) {
+    await MyfirestoreInstance.collection('admin')
+        .doc('jd01')
+        .get()
+        .then((value) {
       var result = value.data();
       print(value.data());
       categoty = result['category'];
-
       //userInfo = userinfo.fromJson(value.data());
       // print(un.name??"hello");
 

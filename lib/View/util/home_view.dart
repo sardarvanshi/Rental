@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -6,6 +7,7 @@ import 'package:lottie/lottie.dart';
 import 'package:rantal/View/util/pdetail.dart';
 import 'package:rantal/View/util/utisUi.dart';
 
+import 'Property_DetailView.dart';
 
 class cslider extends StatefulWidget {
   AsyncSnapshot snapshot;
@@ -17,14 +19,54 @@ class cslider extends StatefulWidget {
 }
 
 class _csliderState extends State<cslider> {
-  final List<String> imgList = [
-    'https://images.unsplash.com/photo-1520342868574-5fa3804e551c?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=6ff92caffcdd63681a35134a6770ed3b&auto=format&fit=crop&w=1951&q=80',
-    'https://images.unsplash.com/photo-1522205408450-add114ad53fe?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=368f45b0888aeb0b7b08e3a1084d3ede&auto=format&fit=crop&w=1950&q=80',
-    'https://images.unsplash.com/photo-1519125323398-675f0ddb6308?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=94a1e718d89ca60a6337a6008341ca50&auto=format&fit=crop&w=1950&q=80',
-    'https://images.unsplash.com/photo-1523205771623-e0faa4d2813d?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=89719a0d55dd05e2deae4120227e6efc&auto=format&fit=crop&w=1953&q=80',
-    'https://images.unsplash.com/photo-1508704019882-f9cf40e475b4?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=8c6e5e3aba713b17aa1fe71ab4f0ae5b&auto=format&fit=crop&w=1352&q=80',
-    'https://images.unsplash.com/photo-1519985176271-adb1088fa94c?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=a0c8d632e977f94e5d312d9893258f59&auto=format&fit=crop&w=1355&q=80'
+  List<String> listImages = [
+    "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?crop&w=1050&q=80",
+    "https://images.unsplash.com/photo-1472224371017-08207f84aaae?crop&w=1350&q=80",
+    "https://images.unsplash.com/photo-1523217582562-09d0def993a6?crop&w=1050&q=80",
+    "https://images.unsplash.com/photo-1577552568192-467a12a7f376?crop&w=1050&q=80"
   ];
+
+  _buildItem(BuildContext context, int index, result) {
+    return Container(
+      margin: EdgeInsets.all(8.0),
+      padding: EdgeInsets.all(8.0),
+      height: 100,
+      width: 200,
+      decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10.0),
+          boxShadow: [
+            BoxShadow(
+              blurRadius: 5.0,
+              offset: Offset(0.0, 3.0),
+              color: Colors.black.withOpacity(0.05),
+              spreadRadius: 2.0,
+            ),
+          ]),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(10.0),
+              child: Image.network(
+                result['Property']['Images'].elementAt(0),
+                fit: BoxFit.cover,
+                width: double.infinity,
+              ),
+            ),
+          ),
+          SizedBox(height: 8),
+          Text(
+            result['Location'].elementAt(1).toString(),
+            style: TextStyle(fontWeight: FontWeight.w700),
+          ),
+          Text(result['Location'].elementAt(0).toString(),
+              style: Theme.of(context).textTheme.caption),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +74,7 @@ class _csliderState extends State<cslider> {
         padding: const EdgeInsets.all(8.0),
         child: Container(
           height: 360,
-          width: 220,
+          width: MediaQuery.of(context).size.width,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
             shrinkWrap: true,
@@ -42,18 +84,17 @@ class _csliderState extends State<cslider> {
 
               return InkWell(
                 onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => MyDetail(result)));
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => Detail()));
                 },
-                child: house(
+                child: _buildItem(context, index, result),
+                /*house(
                   result['image'],
                   result['rprice'].toString(),
                   "any",
                   result['city'],
                   result['rate'].toDouble(),
-                ),
+                ),*/
               );
             },
           ),

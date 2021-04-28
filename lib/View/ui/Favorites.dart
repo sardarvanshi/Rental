@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:rantal/View/util/house.dart';
 import 'package:rantal/View/util/pdetail.dart';
 import 'package:rantal/View/util/utisUi.dart';
+import 'package:rantal/config/palette.dart';
 import 'package:rantal/model/userinfo_model.dart';
 
 class FavoritesPage extends StatefulWidget {
@@ -14,55 +15,47 @@ class FavoritesPage extends StatefulWidget {
 }
 
 class _FavoritesPageState extends State<FavoritesPage> {
-
-  Widget _body = Center(child:CircularProgressIndicator());
+  Widget _body = Center(child: CircularProgressIndicator());
   FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
 
-  List<dynamic> list;
-
+  List<dynamic> list = [];
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-
   }
-Future<void> RefreshHandler(userinfo user) async{
-  await user.fetchUserdata();
-  setState(() {
-    list=user.favorites;
-  });
-}
 
-  Widget fav(BuildContext context) {
+  Future<void> RefreshHandler() async {
+    await context.read<userinfo>().fetchUserdata();
+    setState(() {
+      list = context.watch<userinfo>().favorites;
+      print(list);
+    });
+  }
 
-
-}
+  Widget fav(BuildContext context) {}
 
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<userinfo>(context);
-    list=user.favorites;
+    list = context.read<userinfo>().favorites;
     return Scaffold(
       body: RefreshIndicator(
         color: colorlist[1],
-
-        onRefresh: ()=> RefreshHandler(user),
+        onRefresh: () => RefreshHandler(),
         child: Padding(
           padding: EdgeInsets.all(8),
           child: ListView.builder(
             itemCount: list.length,
             itemBuilder: (contex, index) {
-
               return StreamBuilder(
                   stream: firebaseFirestore
                       .collection("properties")
                       .doc(list.elementAt(index))
                       .snapshots(),
                   builder: (context, snapshot) {
-                    if(snapshot.hasData) {
+                    if (snapshot.hasData) {
                       var result = snapshot.data;
-                      print(result['city']);
                       return InkWell(
                         onTap: () {
                           Navigator.push(
@@ -70,18 +63,13 @@ Future<void> RefreshHandler(userinfo user) async{
                               MaterialPageRoute(
                                   builder: (context) => MyDetail(result)));
                         },
-                        child: propertyList(
-                          context,
-                          result['image'],
-                          result['rprice'],
-                          result['name'],
-                          result['city'],
-                          result['rate'],
-                        ),
-
+                        child: buildVerticalItem(context, index, result),
                       );
-                    }
-                    return CircularProgressIndicator();
+                    } else {}
+                    return Center(
+                        child: CircularProgressIndicator(
+                      semanticsLabel: "Loading",
+                    ));
                   });
             },
           ),
@@ -89,5 +77,4 @@ Future<void> RefreshHandler(userinfo user) async{
       ),
     );
   }
-
 }

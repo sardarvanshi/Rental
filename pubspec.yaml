@@ -31,7 +31,8 @@ dependencies:
   http: ^0.13.0
 
   # firebase
-  firebase_auth:
+  cloud_firestore_web: ^1.0.7
+  firebase_auth: ^1.0.3
   google_sign_in:
   cloud_firestore: ^1.0.0
   firebase_core:
@@ -39,6 +40,7 @@ dependencies:
   image_cropper:
   image_picker:
   multi_image_picker: ^4.8.0
+  flutter_absolute_path: ^1.0.6
   location: ^4.1.1
   firebase_storage_web: ^1.0.2
 
@@ -58,12 +60,15 @@ dependencies:
 
 
 
+
   # connection status
+  fluttertoast: ^8.0.3
 
   # for ui
+  multiselect_formfield: ^0.1.6
+  dropdownfield: ^1.0.3
   font_awesome_flutter:
   animations: ^1.1.2
-  country_state_city_picker: ^1.2.7
   group_button:
   flutter_native_splash: ^1.1.5+1
   solid_bottom_sheet: ^0.1.9

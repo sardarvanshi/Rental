@@ -83,9 +83,9 @@ class _AuthScreenState extends State<AuthScreen>
                         key: const ValueKey('Register'),
                         onSignInPressed: () {
                           // context.resetSignInForm();
-                          showSignInPage.value = false;
-                          _controller.reverse();
-                        },
+                          showSignInPage.value = true;
+                                _controller.reverse();
+                              },
                       ),
                     ),
                   );

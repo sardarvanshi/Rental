@@ -7,6 +7,42 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:157519371211:android:ace3fc5a35a38a0065f44e",
+        "android_client_info": {
+          "package_name": "com.hpud.posrpro"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "157519371211-dgl2cpr55879pivhqgsfdnqfklqrh17n.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDmEdjsyv2chEp5kqVoq1dr-vcSNLNzQAk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "157519371211-dgl2cpr55879pivhqgsfdnqfklqrh17n.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "157519371211-vvrbou153srag524l1bqdmticd2lhkl6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.hpud.rantal"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:157519371211:android:2538920642ae040965f44e",
         "android_client_info": {
           "package_name": "com.hpud.rantal"
@@ -37,6 +73,13 @@
             {
               "client_id": "157519371211-dgl2cpr55879pivhqgsfdnqfklqrh17n.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "157519371211-vvrbou153srag524l1bqdmticd2lhkl6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.hpud.rantal"
+              }
             }
           ]
         }

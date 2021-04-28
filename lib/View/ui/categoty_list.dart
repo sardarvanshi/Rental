@@ -45,14 +45,7 @@ class _Category_ListState extends State<Category_List> {
                               MaterialPageRoute(
                                   builder: (context) => MyDetail(result)));
                         },
-                        child: propertyList(
-                          context,
-                          result['image'],
-                          result['rprice'],
-                          result['name'],
-                          result['city'],
-                          result['rate'],
-                        ),
+                        child: buildVerticalItem(context, index, result),
                       );
                     });
               }
